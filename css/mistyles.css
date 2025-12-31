@@ -155,13 +155,13 @@ h1 {
     margin: 10px 0;
 }
 
-/* IMAGENES DE PROYECTOS - Aumentadas significativamente */
+/* IMAGENES DE PROYECTOS - Optimizado para dashboards anchos */
 .img-project {
     margin: 20px auto;          /* Centra la imagen */
     height: auto;               /* Altura automática para mantener proporción */
-    width: 100%;                /* Ocupa todo el ancho disponible */
-    max-width: 700px;           /* Ancho máximo aumentado */
-    object-fit: contain;        /* CAMBIO CLAVE: muestra imagen completa sin recortar */
+    width: 95%;                 /* Usa casi todo el ancho disponible */
+    max-width: 1100px;          /* AUMENTADO: Ancho máximo para dashboards panorámicos */
+    object-fit: contain;        /* Muestra imagen completa sin recortar */
     border-radius: 8px;         /* Bordes redondeados modernos */
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); /* Sombra para profundidad */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -184,9 +184,10 @@ h1 {
 }
 
 .project .contenedor-project {
-    max-width: 1200px;          /* Aumentado para dar más espacio a imágenes */
+    max-width: 1400px;          /* AUMENTADO: Más espacio para dashboards anchos */
     text-align: center;
     padding: 0 20px;            /* Añade padding lateral */
+    width: 100%;                /* Usa todo el ancho disponible */
 }
 
 .row-project {
@@ -207,7 +208,8 @@ h1 {
 /* Tablets y dispositivos medianos (768px - 991px) */
 @media screen and (max-width: 991px) {
     .img-project {
-        max-width: 600px;       /* Ancho máximo para tablets */
+        max-width: 95%;         /* Usa casi todo el ancho en tablets */
+        width: 95%;
         height: auto;           /* Altura automática */
     }
     
@@ -301,7 +303,8 @@ h1 {
 /* Pantallas grandes (1200px+) */
 @media screen and (min-width: 1200px) {
     .img-project {
-        max-width: 900px;       /* Más ancho en pantallas grandes */
+        max-width: 1300px;      /* MUY ANCHO para pantallas grandes */
+        width: 98%;             /* Usa casi todo el ancho de pantalla */
         height: auto;           /* Altura automática */
     }
     
