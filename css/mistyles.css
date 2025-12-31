@@ -1,187 +1,353 @@
-
 /*  
-convertir contenedor div en contenedores flexibles
-en css poner las siguientes propiedades.
-1. display: flex;
-2. flex-direction: row/column
-
-3. alineacion en eje principal: es el mas largo, el centrado se hace con la propiedad (justify-content)
-    
-4. alineacion en eje secundario; es el eje perpendicular al principal, la alineacion de los elementos verticalmente se hace con la propiedad (align-items)
+PORTFOLIO CSS - VERSION MEJORADA
+Optimizado para mejor visualización de imágenes y responsividad
 */
 
+/* ==================== NAVBAR ==================== */
+.navbar {
+    padding: 2rem;
+    background-color: #f5f6f7;
+}
 
-/* Personalizacion de la barra de navegacion  */
+.navbar-collapse {
+    align-items: center;
+    justify-content: space-between;
+}
 
-.navbar{    padding: 2rem;
-            background-color: #f5f6f7;      
+/* ==================== ESTILOS GENERALES ==================== */
+section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    margin: 40px 0;
+}
 
-        }
-
-
-      /*  nav .collapse{
-            background-color: #f5f6f7;  
-
-        }*/
-
-/* alineacion de los elementos de una caja usando flexbox */
-.navbar-collapse{   align-items: center;
-                    justify-content: space-between;}
-
-.hero{  background-color: white;
-        min-height: 450px;
-        text-align: center;}
-
-section{display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding:0,40px;
-        margin: 0,40px;
-        }
-
-h1{ font-size: 2.5rem;
+h1 {
+    font-size: 2.5rem;
     font-family: "Rubik Dirt", system-ui;
     font-weight: 400;
-    font-style: normal;}
+    font-style: normal;
+}
 
-/*.dark-section{
-    color: white;
-    background-color: #1b1b32;
+.clear-section {
+    color: black;
+    background-color: white;
+}
 
-}*/
+.contenedor .title-section,
+.contenedor .title-service {
+    font-size: 2rem;
+    padding: 15px;
+    font-family: 'Rubik Dirt', cursive;
+}
 
-.clear-section{ color: black;
-                background-color: white;}
+.contenedor .text-section {
+    font-size: 1.2rem;
+}
 
-.contenedor .title-section .title-service{  font-size: 2rem;
-                                            padding: 15px;
-                                            font-family: 'Rubik Dirt', cursive;}
+/* ==================== HERO SECTION ==================== */
+.hero {
+    background-color: white;
+    min-height: 450px;
+    text-align: center;
+    margin-bottom: 50px;
+}
 
+.hero-principal {
+    padding: 3rem;
+}
 
-.contenedor .text-section{font-size: 1.2rem;}
+/* IMAGEN DE PERFIL - Aumentada para mayor impacto */
+.hero-imagen-perfil {
+    width: 250px;              /* Aumentado de 200px */
+    height: 250px;             /* Aumentado de 200px */
+    border-radius: 50%;
+    margin: 20px;
+    object-fit: cover;         /* Asegura que la imagen se vea bien */
+    border: 5px solid #f5f6f7; /* Añade borde sutil */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Añade sombra */
+}
 
+.hero-principal h2 {
+    font-size: 1.5rem;
+    color: #615151;
+}
 
-/* hero */
+/* ==================== ABOUT ME ==================== */
+.about-me {
+    padding: 10px;
+    margin: 20px;
+}
 
-.hero{  background-color: white;
-        min-height: 450px;
-        text-align: center; 
-        margin-bottom: 50px;}
+.about-me .contenedor {
+    max-width: 800px;
+    text-align: center;
+    padding: 100px 0;
+    margin: 50px 0;
+}
 
+/* ==================== SKILLS SECTION ==================== */
+.skill {
+    padding: 40px 20px;
+}
 
-.hero-principal{ padding: 3rem;}
-
-
-/* about me */
-.about-me{ /*height: 1000px;*/
-            padding: 10px;
-            margin: 20px;}
-
-
-
-
-/*skills*/
-.skill{padding: 40px;}
-
-.title-skill{
-    font-size: 20px;
+.title-skill {
+    font-size: 1.5rem;         /* Aumentado para mejor jerarquía */
     font-weight: bold;
-    margin: 10px, 0;}
+    margin: 15px 0;
+}
 
-.img-skill{
-    margin-top: 10px;
-    height: 50px;   }
+/* ICONOS DE SKILLS - Aumentados significativamente */
+.img-skill {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 100px;              /* Aumentado de 50px - 100% más grande */
+    width: auto;                /* Mantiene proporción */
+    object-fit: contain;        /* Mantiene la imagen completa visible */
+    transition: transform 0.3s ease; /* Añade efecto hover */
+}
 
-.paragraph-skill{   }
+.img-skill:hover {
+    transform: scale(1.1);      /* Efecto de zoom al pasar el mouse */
+}
 
+.paragraph-skill {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-top: 15px;
+}
 
+/* ==================== SERVICES SECTION ==================== */
+.service {
+    padding: 40px 20px;
+}
 
-
-
-/*service*/
-.service{padding: 40px;}
-
-.title-service{
-    font-size: 20px;
+.title-service {
+    font-size: 1.5rem;
     font-weight: bold;
-    margin: 10px, 0;}
+    margin: 15px 0;
+}
 
-.img-service{
-/*    margin-top: 10px;*/
-    height: 50px;   }
+/* ICONOS DE SERVICIOS - Aumentados */
+.img-service {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 90px;               /* Aumentado de 50px */
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
 
+.img-service:hover {
+    transform: scale(1.1);
+}
 
-/*project*/
-.project{
-            padding: 40px;
-        /*  margin: 20px;*/
-        }
+/* ==================== PROJECTS SECTION ==================== */
+.project {
+    padding: 40px 20px;
+}
 
-.title-project{
-    font-size: 20px;
+.title-project {
+    font-size: 1.5rem;
     font-weight: bold;
-    margin: 10px;}
+    margin: 10px 0;
+}
 
-.img-project{
-   /* margin: 20px;*/
-    height: 150px;   }
+/* IMAGENES DE PROYECTOS - Aumentadas significativamente */
+.img-project {
+    margin: 20px 0;
+    height: 300px;              /* Aumentado de 150px - 100% más grande */
+    width: 100%;                /* Ocupa todo el ancho disponible */
+    max-width: 500px;           /* Limita el ancho máximo */
+    object-fit: cover;          /* Cubre el área manteniendo proporción */
+    border-radius: 8px;         /* Bordes redondeados modernos */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); /* Sombra para profundidad */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-.paragraph-project{ margin: 20px; }
+.img-project:hover {
+    transform: translateY(-5px); /* Levanta la imagen al hover */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+}
 
-.link-project{  margin-bottom: 60px;}
+.paragraph-project {
+    margin: 20px;
+    font-size: 1rem;
+    line-height: 1.6;
+}
 
+.link-project {
+    margin-bottom: 60px;
+}
 
+.project .contenedor-project {
+    max-width: 1000px;          /* Aumentado de 800px para imágenes más grandes */
+    text-align: center;
+}
 
-
-
-/* contenedores */
-
-.about-me .contenedor{  max-width: 800px;
-                        text-align: center;
-                        padding: 100px,0;
-                        margin: 50px,0;
-                    }
-
-.hero-imagen-perfil{    width: 200px;
-                        height: 200px;
-                        border-radius: 50%;
-                        margin: 20px;}
-
-.hero-principal h2{ font-size: 1.5rem;
-                    color: #615151;}
-
-.project .contenedor-project{  max-width: 800px;
-                            text-align: center;}
-
-.row-project{
+.row-project {
     justify-content: center;
     align-items: center;
     text-align: center;
 }
 
-
-
-.pie-de-pagina{padding: 10px;
+/* ==================== FOOTER ==================== */
+.pie-de-pagina {
+    padding: 10px;
     background-color: #f5f6f7;
     color: black;
 }
 
+/* ==================== RESPONSIVE DESIGN ==================== */
 
+/* Tablets y dispositivos medianos (768px - 991px) */
+@media screen and (max-width: 991px) {
+    .img-project {
+        height: 250px;          /* Reduce un poco en tablets */
+        max-width: 450px;
+    }
+    
+    .img-skill {
+        height: 80px;           /* Reduce un poco en tablets */
+    }
+    
+    .img-service {
+        height: 75px;
+    }
+}
 
-
-
-
-/*adaptable responsivo*/
-
-/*esconde el icono */
-@media screen and (max-width:767px){
-    .navbar-brand{
+/* Móviles y dispositivos pequeños (max 767px) */
+@media screen and (max-width: 767px) {
+    /* Esconde el logo en móviles */
+    .navbar-brand {
         display: none;
     }
+    
+    /* Ajusta imagen de perfil en móviles */
+    .hero-imagen-perfil {
+        width: 200px;
+        height: 200px;
+    }
+    
+    /* Reduce iconos de skills en móviles */
+    .img-skill {
+        height: 70px;
+    }
+    
+    .img-service {
+        height: 65px;
+    }
+    
+    /* Ajusta proyectos para móviles */
+    .img-project {
+        height: 200px;          /* Más pequeño en móviles */
+        max-width: 100%;        /* Usa todo el ancho disponible */
+    }
+    
+    /* Reduce padding en secciones */
+    section {
+        padding: 20px 10px;
+        margin: 20px 0;
+    }
+    
+    .skill,
+    .service,
+    .project {
+        padding: 20px 10px;
+    }
+    
+    /* Ajusta tamaños de fuente */
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .contenedor .title-section,
+    .contenedor .title-service {
+        font-size: 1.5rem;
+    }
+    
+    .title-skill,
+    .title-service,
+    .title-project {
+        font-size: 1.2rem;
+    }
+}
 
-/*    implementacion de puntos de rupturas para la imagen del hero-inferior*/
-/*@media screen and (min-width:700px){
-    .hero-inferior-imagen{ max-width:600px; }
-    }*/
+/* Dispositivos muy pequeños (max 480px) */
+@media screen and (max-width: 480px) {
+    .hero-imagen-perfil {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .img-project {
+        height: 180px;
+    }
+    
+    .img-skill {
+        height: 60px;
+    }
+    
+    .img-service {
+        height: 55px;
+    }
+}
 
+/* Pantallas grandes (1200px+) */
+@media screen and (min-width: 1200px) {
+    .img-project {
+        height: 350px;          /* Aún más grande en pantallas grandes */
+        max-width: 600px;
+    }
+    
+    .img-skill {
+        height: 110px;
+    }
+    
+    .img-service {
+        height: 100px;
+    }
+    
+    .project .contenedor-project {
+        max-width: 1200px;
+    }
+}
+
+/* ==================== MEJORAS ADICIONALES ==================== */
+
+/* Añade espacio entre elementos */
+.skill + .skill,
+.service + .service,
+.project + .project {
+    margin-top: 40px;
+}
+
+/* Mejora la legibilidad del texto */
+p {
+    line-height: 1.6;
+}
+
+/* Añade transición suave a todos los elementos interactivos */
+a,
+button {
+    transition: all 0.3s ease;
+}
+
+/* Mejora el aspecto de los enlaces */
+a:hover {
+    opacity: 0.8;
+}
+
+/* Estilo para las cards si usas Bootstrap */
+.card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}  
