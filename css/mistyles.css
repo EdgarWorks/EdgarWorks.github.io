@@ -157,14 +157,15 @@ h1 {
 
 /* IMAGENES DE PROYECTOS - Aumentadas significativamente */
 .img-project {
-    margin: 20px 0;
-    height: 300px;              /* Aumentado de 150px - 100% más grande */
+    margin: 20px auto;          /* Centra la imagen */
+    height: auto;               /* Altura automática para mantener proporción */
     width: 100%;                /* Ocupa todo el ancho disponible */
-    max-width: 500px;           /* Limita el ancho máximo */
-    object-fit: cover;          /* Cubre el área manteniendo proporción */
+    max-width: 700px;           /* Ancho máximo aumentado */
+    object-fit: contain;        /* CAMBIO CLAVE: muestra imagen completa sin recortar */
     border-radius: 8px;         /* Bordes redondeados modernos */
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); /* Sombra para profundidad */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: block;             /* Asegura que se comporte como bloque */
 }
 
 .img-project:hover {
@@ -183,8 +184,9 @@ h1 {
 }
 
 .project .contenedor-project {
-    max-width: 1000px;          /* Aumentado de 800px para imágenes más grandes */
+    max-width: 1200px;          /* Aumentado para dar más espacio a imágenes */
     text-align: center;
+    padding: 0 20px;            /* Añade padding lateral */
 }
 
 .row-project {
@@ -205,8 +207,8 @@ h1 {
 /* Tablets y dispositivos medianos (768px - 991px) */
 @media screen and (max-width: 991px) {
     .img-project {
-        height: 250px;          /* Reduce un poco en tablets */
-        max-width: 450px;
+        max-width: 600px;       /* Ancho máximo para tablets */
+        height: auto;           /* Altura automática */
     }
     
     .img-skill {
@@ -242,8 +244,8 @@ h1 {
     
     /* Ajusta proyectos para móviles */
     .img-project {
-        height: 200px;          /* Más pequeño en móviles */
         max-width: 100%;        /* Usa todo el ancho disponible */
+        height: auto;           /* Altura automática */
     }
     
     /* Reduce padding en secciones */
@@ -283,7 +285,8 @@ h1 {
     }
     
     .img-project {
-        height: 180px;
+        max-width: 100%;
+        height: auto;
     }
     
     .img-skill {
@@ -298,8 +301,8 @@ h1 {
 /* Pantallas grandes (1200px+) */
 @media screen and (min-width: 1200px) {
     .img-project {
-        height: 350px;          /* Aún más grande en pantallas grandes */
-        max-width: 600px;
+        max-width: 900px;       /* Más ancho en pantallas grandes */
+        height: auto;           /* Altura automática */
     }
     
     .img-skill {
@@ -350,4 +353,4 @@ a:hover {
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-}  
+}
