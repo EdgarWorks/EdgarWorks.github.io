@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Crime Data Analysis | SQL Server Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+
 <style>
   :root {
     /* ── PALETA CLARA ───────────────────────────── */
@@ -731,3 +739,1241 @@
   .sidebar::-webkit-scrollbar { width: 6px; }
   .sidebar::-webkit-scrollbar-thumb { background: #d6dee6; border-radius: 6px; }
 </style>
+
+
+
+
+  
+</head>
+<body>
+
+<!-- ═══════════════════════════════ HEADER ═══════════════════════════════ -->
+<header>
+  <div class="badge">Data Engineering · SQL Server · ETL Pipeline</div>
+  <h1>Los Angeles Crime Data<br/><span>ETL & Analysis Pipeline</span></h1>
+  <p class="subtitle">
+    End-to-end data engineering project: ingestion, cleaning, transformation,
+    normalization and analytical modeling of the LAPD public crime dataset
+    (2020–2025), containing over one million raw records processed in SQL Server.
+  </p>
+  <div class="meta-row">
+    <div class="meta-item">
+      <span class="meta-label">Database</span>
+      <span class="meta-value accent">SQL Server 2022</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Source Records</span>
+      <span class="meta-value accent2">1,005,062</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Clean Records</span>
+      <span class="meta-value" style="color:var(--green)">999,299</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Period</span>
+      <span class="meta-value accent3">Jan 2020 – Jun 2025</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Visualization</span>
+      <span class="meta-value">Tableau Public</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Source</span>
+      <span class="meta-value dim" style="color:var(--text-dim)">data.gov / LAPD</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════ STATS BAR ════════════════════════════ -->
+<div class="stats-bar">
+  <div class="stat-cell">
+    <div class="stat-num">5<span>,</span>763</div>
+    <div class="stat-desc">Records Removed</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num">2<span>,</span>966</div>
+    <div class="stat-desc">Duplicates Detected</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num">2<span>,</span>947<span>K</span></div>
+    <div class="stat-desc">Mocode Combinations</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num">1<span>,</span>070<span>K</span></div>
+    <div class="stat-desc">Crime Code Rows</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num">5</div>
+    <div class="stat-desc">Analytical Views</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num">16</div>
+    <div class="stat-desc">Export Summaries</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ LAYOUT ═══════════════════════════════ -->
+<div class="layout">
+
+<!-- ── SIDEBAR ── -->
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-title">Pipeline Steps</div>
+    <a href="#s1"  class="nav-item active"><span class="nav-num">01</span>Dataset Info</a>
+    <a href="#s2"  class="nav-item"><span class="nav-num">02</span>Column Description</a>
+    <a href="#s3"  class="nav-item"><span class="nav-num">03</span>Data Import (CSV)</a>
+    <a href="#s4"  class="nav-item"><span class="nav-num">04</span>Backup & Work Copy</a>
+    <a href="#s5"  class="nav-item"><span class="nav-num">05</span>Text Cleaning</a>
+    <a href="#s6"  class="nav-item"><span class="nav-num">06</span>Duplicate Detection</a>
+    <a href="#s7"  class="nav-item"><span class="nav-num">07</span>Missing Values</a>
+    <a href="#s8"  class="nav-item"><span class="nav-num">08</span>Invalid Values</a>
+    <a href="#s9"  class="nav-item"><span class="nav-num">09</span>Outlier Analysis</a>
+    <a href="#s10" class="nav-item"><span class="nav-num">10</span>Typed Table</a>
+    <a href="#s11" class="nav-item"><span class="nav-num">11</span>Multivalued Tables</a>
+    <a href="#s12" class="nav-item"><span class="nav-num">12</span>Analytical Views</a>
+    <a href="#s13" class="nav-item"><span class="nav-num">13</span>Export Summaries</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Technologies</div>
+    <div class="tag-list">
+      <span class="tag sql">T-SQL</span>
+      <span class="tag sql">Stored Procs</span>
+      <span class="tag sql">CTEs</span>
+      <span class="tag sql">Window Fns</span>
+      <span class="tag clean">Data Cleaning</span>
+      <span class="tag etl">ETL</span>
+      <span class="tag etl">Normalization</span>
+      <span class="tag tableau">Tableau</span>
+    </div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Key Techniques</div>
+    <div class="tag-list">
+      <span class="tag">BULK INSERT</span>
+      <span class="tag">IQR / Tukey</span>
+      <span class="tag">STRING_SPLIT</span>
+      <span class="tag">PERCENTILE_CONT</span>
+      <span class="tag">DYNAMIC SQL</span>
+      <span class="tag">CROSS APPLY</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+<!-- ───────────────────────────────────────────────────────── SECTION 01 -->
+<section class="section" id="s1">
+  <div class="section-header">
+    <span class="section-num">// 01</span>
+    <h2 class="section-title">Project Overview & Pipeline</h2>
+  </div>
+
+  <div class="info-box">
+    Source: LAPD Crime Data from 2020 to Present — Non-Federal dataset, publicly available at data.gov.
+    Data is transcribed from paper crime reports; some inaccuracies may exist.
+    Addresses truncated to nearest 100-block for privacy. Coordinates (0,0) denote anonymized locations.
+  </div>
+
+  <div class="pipeline">
+    <div class="pipe-step">
+      <div class="pipe-num">STEP 01</div>
+      <div class="pipe-name">Raw Import</div>
+      <div class="pipe-desc">BULK INSERT from CSV into NVARCHAR(MAX) staging table</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">STEP 02</div>
+      <div class="pipe-name">Text Clean</div>
+      <div class="pipe-desc">TRIM, UPPER, NULLIF, internal spaces normalized</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">STEP 03</div>
+      <div class="pipe-name">Deduplicate</div>
+      <div class="pipe-desc">ROW_NUMBER() OVER PARTITION — 2,966 rows removed</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">STEP 04</div>
+      <div class="pipe-name">Validate</div>
+      <div class="pipe-desc">Missing values, invalid codes, range checks per column</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">STEP 05</div>
+      <div class="pipe-name">Type Cast</div>
+      <div class="pipe-desc">BIGINT, DATE, TIME, SMALLINT, DECIMAL, NVARCHAR typed</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">STEP 06</div>
+      <div class="pipe-name">Normalize</div>
+      <div class="pipe-desc">Multivalued columns split into junction tables</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">STEP 07</div>
+      <div class="pipe-name">Enrich</div>
+      <div class="pipe-desc">Date parts, age groups, crime categories derived</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">STEP 08</div>
+      <div class="pipe-name">Views</div>
+      <div class="pipe-desc">5 analytical views + 16 summary exports for Tableau</div>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="card-icon">🧹</span>
+      <div class="card-title">Data Quality</div>
+      <div class="card-text">Systematic removal of duplicates, invalid values, corrupted records, and anonymized coordinates (0,0 pairs).</div>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔗</span>
+      <div class="card-title">Normalization</div>
+      <div class="card-text">Multivalued columns (Mocodes, Crime Codes 1–4) separated into dedicated junction tables with composite PKs.</div>
+    </div>
+    <div class="card">
+      <span class="card-icon">📊</span>
+      <div class="card-title">Analytical Model</div>
+      <div class="card-text">5 specialized views designed to avoid Cartesian products while enabling univariate, bivariate and multivariate analysis.</div>
+    </div>
+    <div class="card">
+      <span class="card-icon">📤</span>
+      <div class="card-title">Tableau Ready</div>
+      <div class="card-text">16 pre-aggregated summary tables exported as CSV for Tableau Public visualizations.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── SECTION 02 -->
+<section class="section" id="s2">
+  <div class="section-header">
+    <span class="section-num">// 02</span>
+    <h2 class="section-title">Column Descriptions & Classification</h2>
+    <span class="section-sub">28 original columns</span>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Column</th>
+        <th>Type</th>
+        <th>Category</th>
+        <th>Description</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="accent">DR_NO</td><td class="accent3">BIGINT</td><td>ID</td><td>Division of Records Number — unique incident ID</td><td>9-digit format, Primary Key</td></tr>
+      <tr><td>Date_Rptd</td><td class="accent3">DATE</td><td>Quantitative</td><td>Date crime was reported to law enforcement</td><td>May differ from occurrence date</td></tr>
+      <tr><td>DATE_OCC</td><td class="accent3">DATE</td><td>Quantitative</td><td>Date crime actually took place</td><td>Always ≤ Date_Rptd</td></tr>
+      <tr><td>TIME_OCC</td><td class="accent3">TIME</td><td>Quantitative</td><td>Time occurred — 24-hour format (HHMM → HH:MM:00)</td><td>Reformatted from 4-digit int</td></tr>
+      <tr><td>AREA / AREA_NAME</td><td class="accent3">TINYINT / NVARCHAR</td><td>Qualitative</td><td>LAPD police division code and name</td><td>21 valid divisions (01–21)</td></tr>
+      <tr><td>Rpt_Dist_No</td><td class="accent3">SMALLINT</td><td>Qualitative</td><td>Reporting district — 4-digit, prefix = AREA code</td><td>Hierarchical code</td></tr>
+      <tr><td>Part_1_2</td><td class="accent3">TINYINT</td><td>Qualitative</td><td>FBI UCR classification: 1=serious / 2=misdemeanor</td><td>Always consistent with CRM_CD</td></tr>
+      <tr><td>Crm_Cd / Crm_Cd_Desc</td><td class="accent3">SMALLINT / NVARCHAR</td><td>Qualitative</td><td>Primary crime code and description — 1:1 relationship</td><td>140 unique codes (110–956)</td></tr>
+      <tr><td class="accent2">Mocodes</td><td class="accent3">NVARCHAR</td><td>Multivalued</td><td>Space-separated MO codes describing crime method</td><td>Normalized to junction table</td></tr>
+      <tr><td>Vict_Age</td><td class="accent3">TINYINT</td><td>Quantitative</td><td>Victim age in years; 0 = no victim present</td><td>Outlier threshold: >83 (Tukey IQR)</td></tr>
+      <tr><td>Vict_Sex</td><td class="accent3">NVARCHAR</td><td>Qualitative</td><td>M=Male / F=Female / X=Unknown / NULL=No victim</td><td>Expanded to full text</td></tr>
+      <tr><td>Vict_Descent</td><td class="accent3">NVARCHAR</td><td>Qualitative</td><td>Race/ethnicity code — 20 valid LAPD codes</td><td>Expanded to full text</td></tr>
+      <tr><td>Premis_Cd / Premis_Desc</td><td class="accent3">SMALLINT / NVARCHAR</td><td>Qualitative</td><td>Location type where crime occurred</td><td>314 unique codes; 9 retired removed</td></tr>
+      <tr><td>Weapon_Used_Cd / Weapon_Desc</td><td class="accent3">SMALLINT / NVARCHAR</td><td>Qualitative</td><td>Weapon involved in crime, if any</td><td>67.4% NULL (no weapon crimes)</td></tr>
+      <tr><td>Status / Status_Desc</td><td class="accent3">CHAR / NVARCHAR</td><td>Qualitative</td><td>Current case status: IC / AA / AO / JA / JO / CC</td><td>CC 'UNK' corrected to 'CASE CLOSED'</td></tr>
+      <tr><td class="accent2">Crm_Cd_1–4</td><td class="accent3">SMALLINT</td><td>Multivalued</td><td>Additional crime charges — 998 = filler/no charge</td><td>Normalized to junction table</td></tr>
+      <tr><td>LOCATION / Cross_Street</td><td class="accent3">NVARCHAR</td><td>Qualitative</td><td>Street address (nearest 100-block) and cross street</td><td>Invalid/unknown addresses removed</td></tr>
+      <tr><td>LAT / LON</td><td class="accent3">DECIMAL(8,4)</td><td>Geospatial</td><td>Decimal coordinates — Los Angeles bounds validated</td><td>0,0 pairs removed (anonymized)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── SECTION 03 -->
+<section class="section" id="s3">
+  <div class="section-header">
+    <span class="section-num">// 03</span>
+    <h2 class="section-title">Database Creation & CSV Import</h2>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-title">Step 01 — Database &amp; Staging Table</span>
+      <span class="code-badge">DDL</span>
+    </div>
+<pre><code><span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- STEP 01: CREATE DATABASE AND STAGING TABLE (ALL NVARCHAR FOR IMPORT)
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">CREATE DATABASE</span> <span class="tbl">CrimeAnalysis</span>;
+<span class="kw">GO</span>
+
+<span class="kw">USE</span> <span class="tbl">CrimeAnalysis</span>;
+<span class="kw">GO</span>
+
+<span class="cmt-section">-- All columns defined as NVARCHAR(MAX) to safely ingest raw CSV data.
+-- Type casting is deferred to the typed table (STEP 11).</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">CRIME_DATA_RAW</span> (
+    <span class="col">DR_NO</span>           <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Date_Rptd</span>       <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">DATE_OCC</span>        <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">TIME_OCC</span>        <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">AREA</span>            <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">AREA_NAME</span>       <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Rpt_Dist_No</span>     <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Part_1_2</span>        <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Crm_Cd</span>          <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Crm_Cd_Desc</span>     <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Mocodes</span>         <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Vict_Age</span>        <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Vict_Sex</span>        <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Vict_Descent</span>    <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Premis_Cd</span>       <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Premis_Desc</span>     <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Weapon_Used_Cd</span>  <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Weapon_Desc</span>     <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Status</span>          <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Status_Desc</span>     <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Crm_Cd_1</span>        <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Crm_Cd_2</span>        <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Crm_Cd_3</span>        <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Crm_Cd_4</span>        <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">LOCATION</span>        <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">Cross_Street</span>    <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">LAT</span>             <span class="typ">NVARCHAR(MAX)</span>,
+    <span class="col">LON</span>             <span class="typ">NVARCHAR(MAX)</span>
+);
+<span class="kw">GO</span></code></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-title">Step 02 — Bulk Import from CSV</span>
+      <span class="code-badge orange">BULK INSERT</span>
+    </div>
+<pre><code><span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- STEP 02: BULK INSERT FROM CSV FILE
+--          Source: Crime_Data_from_2020_to_Present2025_org.csv
+--          Encoding: UTF-8 | Delimiter: comma | Quote: double-quote
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">BULK INSERT</span> <span class="tbl">CRIME_DATA_RAW</span>
+<span class="kw">FROM</span> <span class="str">'D:\Downloads\sql\Crime_Data_from_2020_to_Present2025_org.csv'</span>
+<span class="kw">WITH</span> (
+    FORMAT          = <span class="str">'CSV'</span>,         <span class="cmt">-- Standard CSV parsing with quote handling</span>
+    FIELDQUOTE      = <span class="str">'"'</span>,           <span class="cmt">-- Double-quote protects embedded commas</span>
+    FIELDTERMINATOR = <span class="str">','</span>,           <span class="cmt">-- Column separator</span>
+    ROWTERMINATOR   = <span class="str">'0x0a'</span>,        <span class="cmt">-- Unix LF line endings (hex for precision)</span>
+    FIRSTROW        = <span class="num">2</span>,             <span class="cmt">-- Skip header row</span>
+    CODEPAGE        = <span class="str">'65001'</span>,       <span class="cmt">-- UTF-8 encoding</span>
+    TABLOCK                            <span class="cmt">-- Lock table for bulk performance</span>
+);
+<span class="kw">GO</span>
+
+<span class="cmt">-- Verify import</span>
+<span class="kw">SELECT</span> <span class="fn">COUNT</span>(*) <span class="kw">AS</span> <span class="col">total_imported</span> <span class="kw">FROM</span> <span class="tbl">CRIME_DATA_RAW</span>;
+<span class="cmt">-- Result: 1,005,062 rows</span></code></pre>
+  </div>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── SECTION 04 -->
+<section class="section" id="s4">
+  <div class="section-header">
+    <span class="section-num">// 04</span>
+    <h2 class="section-title">Backup &amp; Working Copy</h2>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-title">Database Backup + Working Copy Creation</span>
+      <span class="code-badge orange">BACKUP</span>
+    </div>
+<pre><code><span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- STEP 03: FULL DATABASE BACKUP BEFORE ANY TRANSFORMATIONS
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">BACKUP DATABASE</span> <span class="tbl">CrimeAnalysis</span>
+<span class="kw">TO DISK</span> = <span class="str">'D:\Downloads\sql\CrimeAnalysis.bak'</span>
+<span class="kw">WITH</span>
+    FORMAT,                             <span class="cmt">-- Overwrite existing media set</span>
+    INIT,                               <span class="cmt">-- Initialize backup set</span>
+    NAME  = <span class="str">'Full Backup CrimeAnalysis'</span>,
+    STATS = <span class="num">10</span>;                         <span class="cmt">-- Progress every 10%</span>
+<span class="kw">GO</span>
+
+<span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- STEP 04: CREATE WORKING COPY — CRIME_DATA_RAW STAYS UNTOUCHED
+--          All transformations are applied to CRIME_DATA_RAW_WORK.
+--          CRIME_DATA_RAW acts as the immutable source of truth.
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">SELECT</span> * <span class="kw">INTO</span> <span class="tbl">CRIME_DATA_RAW_WORK</span> <span class="kw">FROM</span> <span class="tbl">CRIME_DATA_RAW</span>;
+<span class="kw">GO</span>
+
+<span class="kw">SELECT</span> <span class="fn">COUNT</span>(*) <span class="kw">AS</span> <span class="col">rows_in_work_copy</span> <span class="kw">FROM</span> <span class="tbl">CRIME_DATA_RAW_WORK</span>;
+<span class="cmt">-- Result: 1,005,062 (matches source)</span></code></pre>
+  </div>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── SECTION 05 -->
+<section class="section" id="s5">
+  <div class="section-header">
+    <span class="section-num">// 05</span>
+    <h2 class="section-title">Text Cleaning — CRIME_DATA_CLEAN_TEXT</h2>
+  </div>
+
+  <div class="warn-box">
+    Internal spacing issue: some LOCATION values contain multiple consecutive spaces from
+    the original paper-transcribed data. A CHAR(7) sentinel character technique is used
+    to collapse them without corrupting valid single spaces.
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-title">Step 05 — Text Normalization Rules Applied</span>
+      <span class="code-badge green">CLEAN</span>
+    </div>
+<pre><code><span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- STEP 05: TEXT CLEANING — Normalize all string columns
+--
+--  Rules applied:
+--   1. TRIM()        → Remove leading/trailing whitespace
+--   2. UPPER()       → Standardize to uppercase
+--   3. NULLIF(,'')   → Convert empty strings to NULL
+--   4. CHAR(7) trick → Collapse internal multiple spaces to single space
+--      Pattern: '  ' → ' '+CHAR(7) → CHAR(7)+' '→ '' → remove CHAR(7)
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">SELECT</span>
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">DR_NO</span>), <span class="str">''</span>)                                               <span class="kw">AS</span> <span class="col">DR_NO</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">Date_Rptd</span>), <span class="str">''</span>)                                           <span class="kw">AS</span> <span class="col">DATE_RPTD</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">DATE_OCC</span>), <span class="str">''</span>)                                            <span class="kw">AS</span> <span class="col">DATE_OCC</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">TIME_OCC</span>), <span class="str">''</span>)                                            <span class="kw">AS</span> <span class="col">TIME_OCC</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">AREA</span>), <span class="str">''</span>)                                                <span class="kw">AS</span> <span class="col">AREA</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">UPPER</span>(<span class="fn">TRIM</span>(<span class="col">AREA_NAME</span>)), <span class="str">''</span>)                                    <span class="kw">AS</span> <span class="col">AREA_NAME</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">Rpt_Dist_No</span>), <span class="str">''</span>)                                         <span class="kw">AS</span> <span class="col">DISTRICT</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">Part_1_2</span>), <span class="str">''</span>)                                            <span class="kw">AS</span> <span class="col">PART1_2</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">Crm_Cd</span>), <span class="str">''</span>)                                              <span class="kw">AS</span> <span class="col">CRM_CD</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">UPPER</span>(<span class="fn">TRIM</span>(<span class="col">Crm_Cd_Desc</span>)), <span class="str">''</span>)                                  <span class="kw">AS</span> <span class="col">CRM_CD_DESC</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">Mocodes</span>), <span class="str">''</span>)                                             <span class="kw">AS</span> <span class="col">MOCODES</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">Vict_Age</span>), <span class="str">''</span>)                                            <span class="kw">AS</span> <span class="col">VICT_AGE</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">UPPER</span>(<span class="fn">TRIM</span>(<span class="col">Vict_Sex</span>)), <span class="str">''</span>)                                     <span class="kw">AS</span> <span class="col">VICT_SEX</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">UPPER</span>(<span class="fn">TRIM</span>(<span class="col">Vict_Descent</span>)), <span class="str">''</span>)                                <span class="kw">AS</span> <span class="col">VICT_DESCENT</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">Premis_Cd</span>), <span class="str">''</span>)                                           <span class="kw">AS</span> <span class="col">PREMIS_CD</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">UPPER</span>(<span class="fn">TRIM</span>(<span class="col">Premis_Desc</span>)), <span class="str">''</span>)                                  <span class="kw">AS</span> <span class="col">PREMIS_DESC</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">Weapon_Used_Cd</span>), <span class="str">''</span>)                                      <span class="kw">AS</span> <span class="col">WEAPON_CD</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">UPPER</span>(<span class="fn">TRIM</span>(<span class="col">Weapon_Desc</span>)), <span class="str">''</span>)                                  <span class="kw">AS</span> <span class="col">WEAPON_DESC</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">UPPER</span>(<span class="fn">TRIM</span>(<span class="col">Status</span>)), <span class="str">''</span>)                                       <span class="kw">AS</span> <span class="col">STATUS_ID</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">UPPER</span>(<span class="fn">TRIM</span>(<span class="col">Status_Desc</span>)), <span class="str">''</span>)                                  <span class="kw">AS</span> <span class="col">STATUS_DESC</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">Crm_Cd_1</span>), <span class="str">''</span>)                                            <span class="kw">AS</span> <span class="col">CRM_CD_1</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">Crm_Cd_2</span>), <span class="str">''</span>)                                            <span class="kw">AS</span> <span class="col">CRM_CD_2</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">Crm_Cd_3</span>), <span class="str">''</span>)                                            <span class="kw">AS</span> <span class="col">CRM_CD_3</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">Crm_Cd_4</span>), <span class="str">''</span>)                                            <span class="kw">AS</span> <span class="col">CRM_CD_4</span>,
+    <span class="cmt">-- Collapse internal multiple spaces using CHAR(7) sentinel technique</span>
+    <span class="fn">NULLIF</span>(<span class="fn">UPPER</span>(<span class="fn">TRIM</span>(
+        <span class="fn">REPLACE</span>(<span class="fn">REPLACE</span>(<span class="fn">REPLACE</span>(<span class="col">LOCATION</span>,
+            <span class="str">'  '</span>, <span class="str">' '</span> + <span class="fn">CHAR</span>(<span class="num">7</span>)),
+            <span class="fn">CHAR</span>(<span class="num">7</span>) + <span class="str">' '</span>, <span class="str">''</span>),
+            <span class="fn">CHAR</span>(<span class="num">7</span>), <span class="str">''</span>)
+    )), <span class="str">''</span>)                                                                  <span class="kw">AS</span> <span class="col">LOCATION</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">UPPER</span>(<span class="fn">TRIM</span>(
+        <span class="fn">REPLACE</span>(<span class="fn">REPLACE</span>(<span class="fn">REPLACE</span>(<span class="col">Cross_Street</span>,
+            <span class="str">'  '</span>, <span class="str">' '</span> + <span class="fn">CHAR</span>(<span class="num">7</span>)),
+            <span class="fn">CHAR</span>(<span class="num">7</span>) + <span class="str">' '</span>, <span class="str">''</span>),
+            <span class="fn">CHAR</span>(<span class="num">7</span>), <span class="str">''</span>)
+    )), <span class="str">''</span>)                                                                  <span class="kw">AS</span> <span class="col">CROSS_STREET</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">LAT</span>), <span class="str">''</span>)                                                <span class="kw">AS</span> <span class="col">LATITUDE</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRIM</span>(<span class="col">LON</span>), <span class="str">''</span>)                                                <span class="kw">AS</span> <span class="col">LONGITUDE</span>
+<span class="kw">INTO</span> <span class="tbl">CRIME_DATA_CLEAN_TEXT</span>
+<span class="kw">FROM</span> <span class="tbl">CRIME_DATA_RAW_WORK</span>;
+<span class="kw">GO</span>
+
+<span class="kw">DROP TABLE</span> <span class="tbl">CRIME_DATA_RAW_WORK</span>; <span class="cmt">-- No longer needed</span>
+<span class="kw">GO</span></code></pre>
+  </div>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── SECTION 06 -->
+<section class="section" id="s6">
+  <div class="section-header">
+    <span class="section-num">// 06</span>
+    <h2 class="section-title">Duplicate Detection &amp; Removal</h2>
+  </div>
+
+  <div class="result-box">2,966 duplicate rows detected and removed. DR_NO is unique (zero key duplicates).
+  Duplicates identified across all 27 non-key columns using ROW_NUMBER() OVER PARTITION BY.</div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-title">Step 06 — Duplicate Isolation using Window Functions</span>
+      <span class="code-badge">ROW_NUMBER()</span>
+    </div>
+<pre><code><span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- STEP 06: DUPLICATE DETECTION
+--
+--  Strategy: ROW_NUMBER() OVER PARTITION BY all non-key columns.
+--   cnt_reg = 1  → unique record → keep
+--   cnt_reg > 1  → duplicate     → archive to DUPLICATES table
+--
+--  Note: DR_NO column excluded from partition — it is always unique.
+--  Some incidents share identical data with different DR_NOs (data
+--  entry duplicates from paper-to-digital transcription).
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">WITH</span> <span class="tbl">REG_DUP</span> <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> *,
+        <span class="fn">COUNT</span>(*) <span class="kw">OVER</span> (
+            <span class="kw">PARTITION BY</span>
+                <span class="col">Date_Rptd</span>, <span class="col">DATE_OCC</span>, <span class="col">TIME_OCC</span>,
+                <span class="col">AREA</span>, <span class="col">AREA_NAME</span>, <span class="col">DISTRICT</span>,
+                <span class="col">PART1_2</span>, <span class="col">Crm_Cd</span>, <span class="col">Crm_Cd_Desc</span>, <span class="col">Mocodes</span>,
+                <span class="col">Vict_Age</span>, <span class="col">Vict_Sex</span>, <span class="col">Vict_Descent</span>,
+                <span class="col">Premis_Cd</span>, <span class="col">Premis_Desc</span>, <span class="col">WEAPON_CD</span>, <span class="col">Weapon_Desc</span>,
+                <span class="col">STATUS_ID</span>, <span class="col">Status_Desc</span>,
+                <span class="col">Crm_Cd_1</span>, <span class="col">Crm_Cd_2</span>, <span class="col">Crm_Cd_3</span>, <span class="col">Crm_Cd_4</span>,
+                <span class="col">LOCATION</span>, <span class="col">Cross_Street</span>, <span class="col">LATITUDE</span>, <span class="col">LONGITUDE</span>
+        ) <span class="kw">AS</span> <span class="col">total_duplicates</span>,
+        <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span> (
+            <span class="kw">PARTITION BY</span>
+                <span class="col">Date_Rptd</span>, <span class="col">DATE_OCC</span>, <span class="col">TIME_OCC</span>,
+                <span class="col">AREA</span>, <span class="col">AREA_NAME</span>, <span class="col">DISTRICT</span>,
+                <span class="col">PART1_2</span>, <span class="col">Crm_Cd</span>, <span class="col">Crm_Cd_Desc</span>, <span class="col">Mocodes</span>,
+                <span class="col">Vict_Age</span>, <span class="col">Vict_Sex</span>, <span class="col">Vict_Descent</span>,
+                <span class="col">Premis_Cd</span>, <span class="col">Premis_Desc</span>, <span class="col">WEAPON_CD</span>, <span class="col">Weapon_Desc</span>,
+                <span class="col">STATUS_ID</span>, <span class="col">Status_Desc</span>,
+                <span class="col">Crm_Cd_1</span>, <span class="col">Crm_Cd_2</span>, <span class="col">Crm_Cd_3</span>, <span class="col">Crm_Cd_4</span>,
+                <span class="col">LOCATION</span>, <span class="col">Cross_Street</span>, <span class="col">LATITUDE</span>, <span class="col">LONGITUDE</span>
+            <span class="kw">ORDER BY</span> <span class="col">DR_NO</span>                       <span class="cmt">-- Lowest DR_NO = canonical record</span>
+        ) <span class="kw">AS</span> <span class="col">row_rank</span>
+    <span class="kw">FROM</span> <span class="tbl">CRIME_DATA_CLEAN_TEXT</span>
+)
+<span class="cmt">-- Archive duplicates for audit</span>
+<span class="kw">SELECT</span> * <span class="kw">INTO</span> <span class="tbl">CRIME_DATA_DUPLICATES</span>
+<span class="kw">FROM</span> <span class="tbl">REG_DUP</span> <span class="kw">WHERE</span> <span class="col">row_rank</span> <span class="op">></span> <span class="num">1</span>;
+<span class="kw">GO</span>
+
+<span class="cmt">-- Build clean table (row_rank = 1 only)</span>
+<span class="kw">WITH</span> <span class="tbl">REG_DUP</span> <span class="kw">AS</span> ( <span class="cmt">/* same CTE as above */</span> )
+<span class="kw">SELECT</span>
+    <span class="col">DR_NO</span>, <span class="col">Date_Rptd</span>, <span class="col">DATE_OCC</span>, <span class="col">TIME_OCC</span>,
+    <span class="col">AREA</span>, <span class="col">AREA_NAME</span>, <span class="col">DISTRICT</span>, <span class="col">PART1_2</span>,
+    <span class="col">Crm_Cd</span>, <span class="col">Crm_Cd_Desc</span>, <span class="col">Mocodes</span>,
+    <span class="col">Vict_Age</span>, <span class="col">Vict_Sex</span>, <span class="col">Vict_Descent</span>,
+    <span class="col">Premis_Cd</span>, <span class="col">Premis_Desc</span>, <span class="col">WEAPON_CD</span>, <span class="col">Weapon_Desc</span>,
+    <span class="col">STATUS_ID</span>, <span class="col">Status_Desc</span>,
+    <span class="col">Crm_Cd_1</span>, <span class="col">Crm_Cd_2</span>, <span class="col">Crm_Cd_3</span>, <span class="col">Crm_Cd_4</span>,
+    <span class="col">LOCATION</span>, <span class="col">Cross_Street</span>, <span class="col">LATITUDE</span>, <span class="col">LONGITUDE</span>
+<span class="kw">INTO</span> <span class="tbl">CRIME_DATA_CLEAN_TEXT_WITHOUT_DUPLICATES</span>
+<span class="kw">FROM</span> <span class="tbl">REG_DUP</span> <span class="kw">WHERE</span> <span class="col">row_rank</span> = <span class="num">1</span>;
+<span class="kw">GO</span>
+<span class="cmt">-- Result: 1,002,096 rows (1,005,062 − 2,966 duplicates)</span></code></pre>
+  </div>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── SECTION 07 -->
+<section class="section" id="s7">
+  <div class="section-header">
+    <span class="section-num">// 07</span>
+    <h2 class="section-title">Missing Values Analysis — Stored Procedure</h2>
+  </div>
+
+  <div class="info-box">
+    A reusable stored procedure scans every column of any table using dynamic SQL,
+    calculating completeness %, missing count, and a recommended action (keep/delete/impute/drop column).
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-title">sp_ResumenValoresFaltantesTabla — Dynamic SQL Table Scanner</span>
+      <span class="code-badge">STORED PROC</span>
+    </div>
+<pre><code><span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- STEP 07: REUSABLE STORED PROCEDURE FOR MISSING VALUE ANALYSIS
+--
+--  Input:  @la_tabla  (table name), @el_esquema (schema, default 'dbo')
+--  Output: Per-column completeness report with action recommendation
+--
+--  Recommendation thresholds:
+--   = 0%    → KEEP INTACT
+--   ≤ 10%   → DELETE NULL ROWS
+--   ≤ 60%   → IMPUTE (Mean / Mode)
+--   ≤ 90%   → EVALUATE RELEVANCE
+--   > 90%   → DROP COLUMN (low informativeness)
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">CREATE PROCEDURE</span> <span class="fn">sp_ResumenValoresFaltantesTabla</span>
+    <span class="col">@la_tabla</span>   <span class="typ">NVARCHAR(128)</span>,
+    <span class="col">@el_esquema</span> <span class="typ">NVARCHAR(128)</span> = <span class="str">'dbo'</span>
+<span class="kw">AS</span>
+<span class="kw">BEGIN</span>
+    <span class="kw">SET NOCOUNT ON</span>;
+
+    <span class="kw">DECLARE</span> <span class="col">@sql</span>                   <span class="typ">NVARCHAR(MAX)</span> = N<span class="str">''</span>;
+    <span class="kw">DECLARE</span> <span class="col">@nombre_completo_tabla</span>  <span class="typ">NVARCHAR(256)</span> =
+        <span class="fn">QUOTENAME</span>(<span class="col">@el_esquema</span>) + <span class="str">'.'</span> + <span class="fn">QUOTENAME</span>(<span class="col">@la_tabla</span>);
+
+    <span class="cmt">-- Build one SELECT per column, union-all them</span>
+    <span class="kw">SELECT</span> <span class="col">@sql</span> = <span class="col">@sql</span> +
+        <span class="str">'SELECT '</span> +
+            <span class="str">''''</span> + <span class="col">name</span> + <span class="str">''' AS nombre_columna, '</span> +
+            <span class="str">'COUNT(*) AS tot_de_registros, '</span> +
+            <span class="str">'SUM(CASE WHEN '</span> + <span class="fn">QUOTENAME</span>(<span class="col">name</span>) +
+            <span class="str">' IS NULL OR LTRIM(RTRIM(CAST('</span> + <span class="fn">QUOTENAME</span>(<span class="col">name</span>) +
+            <span class="str">' AS NVARCHAR(MAX)))) = '''' THEN 1 ELSE 0 END) AS tot_reg_faltantes '</span> +
+        <span class="str">'FROM '</span> + <span class="col">@nombre_completo_tabla</span> + <span class="str">' UNION ALL '</span>
+    <span class="kw">FROM</span> <span class="tbl">sys.columns</span>
+    <span class="kw">WHERE</span> <span class="col">object_id</span> = <span class="fn">OBJECT_ID</span>(<span class="col">@nombre_completo_tabla</span>);
+
+    <span class="cmt">-- Remove trailing UNION ALL</span>
+    <span class="kw">SET</span> <span class="col">@sql</span> = <span class="fn">LEFT</span>(<span class="col">@sql</span>, <span class="fn">LEN</span>(<span class="col">@sql</span>) - <span class="num">10</span>);
+
+    <span class="cmt">-- Wrap in final recommendation logic</span>
+    <span class="kw">DECLARE</span> <span class="col">@final_sql</span> <span class="typ">NVARCHAR(MAX)</span> = N<span class="str">'
+    SELECT
+        nombre_columna,
+        tot_de_registros,
+        tot_reg_faltantes,
+        TRY_CONVERT(DECIMAL(6,2),
+            100.0*(tot_de_registros-tot_reg_faltantes)/NULLIF(tot_de_registros,0)
+        ) AS x100_completitud,
+        TRY_CONVERT(DECIMAL(6,2),
+            100.0*tot_reg_faltantes/NULLIF(tot_de_registros,0)
+        ) AS x100_faltantes,
+        CASE
+            WHEN (100.0*tot_reg_faltantes/NULLIF(tot_de_registros,0)) =   0
+                THEN ''KEEP INTACT''
+            WHEN (100.0*tot_reg_faltantes/NULLIF(tot_de_registros,0)) <=  10
+                THEN ''DELETE NULL ROWS''
+            WHEN (100.0*tot_reg_faltantes/NULLIF(tot_de_registros,0)) <=  60
+                THEN ''IMPUTE (Mean/Mode)''
+            WHEN (100.0*tot_reg_faltantes/NULLIF(tot_de_registros,0)) <=  90
+                THEN ''EVALUATE RELEVANCE''
+            ELSE     ''DROP COLUMN (low informativeness)''
+        END AS RECOMMENDATION
+    FROM ('</span> + <span class="col">@sql</span> + <span class="str">') T1
+    ORDER BY x100_faltantes DESC'</span>;
+
+    <span class="kw">EXEC</span> <span class="fn">sp_executesql</span> <span class="col">@final_sql</span>;
+<span class="kw">END</span>
+<span class="kw">GO</span>
+
+<span class="cmt">-- Usage</span>
+<span class="kw">EXEC</span> <span class="fn">sp_ResumenValoresFaltantesTabla</span> <span class="str">'CRIME_DATA_CLEAN_TEXT_WITHOUT_DUPLICATES'</span>;
+<span class="kw">GO</span></code></pre>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Column</th><th>Missing %</th><th>Action Taken</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Crm_Cd_4</td><td class="accent">99.99%</td><td class="dim">Multivalued → normalized to junction table</td></tr>
+      <tr><td>Crm_Cd_3</td><td class="accent">99.77%</td><td class="dim">Multivalued → normalized to junction table</td></tr>
+      <tr><td>Crm_Cd_2</td><td class="accent">93.11%</td><td class="dim">Multivalued → normalized to junction table</td></tr>
+      <tr><td>Cross_Street</td><td class="accent2">84.65%</td><td class="dim">Kept — optional geospatial field</td></tr>
+      <tr><td>Weapon_CD / Weapon_Desc</td><td class="accent2">67.44%</td><td class="dim">NULL = no weapon involved (valid business case)</td></tr>
+      <tr><td>Mocodes</td><td class="accent2">15.01%</td><td class="dim">Multivalued → normalized to junction table</td></tr>
+      <tr><td>Vict_Sex / Vict_Descent</td><td class="accent2">14.32%</td><td class="dim">NULL = property crime, no victim present</td></tr>
+      <tr><td>Premis_Cd / Premis_Desc</td><td class="green">0.06%</td><td class="green">16 rows with both NULL deleted</td></tr>
+      <tr><td>Status_ID</td><td class="green">0.00%</td><td class="green">1 row deleted</td></tr>
+      <tr><td>Crm_Cd_1</td><td class="green">0.00%</td><td class="green">11 rows deleted</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── SECTION 08 -->
+<section class="section" id="s8">
+  <div class="section-header">
+    <span class="section-num">// 08</span>
+    <h2 class="section-title">Invalid Values — Column-by-Column Validation</h2>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="card-icon">🔑</span>
+      <div class="card-title">DR_NO</div>
+      <div class="card-text">Must be 9-digit numeric. 7 records with &lt;9 digits deleted using LIKE pattern matching.</div>
+    </div>
+    <div class="card">
+      <span class="card-icon">📅</span>
+      <div class="card-title">Dates & Time</div>
+      <div class="card-text">Range 2020–2025 validated. No future dates. TIME_OCC reformatted from HHMM integer to HH:MM:00 string.</div>
+    </div>
+    <div class="card">
+      <span class="card-icon">👤</span>
+      <div class="card-title">Victim Sex/Descent</div>
+      <div class="card-text">115 rows with code 'H' (sex) and 1 row with '-' (descent) deleted as invalid codes.</div>
+    </div>
+    <div class="card">
+      <span class="card-icon">🗺️</span>
+      <div class="card-title">Coordinates</div>
+      <div class="card-text">LA bounds (33.70–34.35 LAT, -119 to -118 LON) validated. 2,237 anonymized (0,0) pairs archived and removed.</div>
+    </div>
+    <div class="card">
+      <span class="card-icon">🏢</span>
+      <div class="card-title">Premis_Desc</div>
+      <div class="card-text">9 'RETIRED (DUPLICATE) DO NOT USE' entries deleted. Asterisk suffixes removed. 'RR' expanded to 'RAILROAD'.</div>
+    </div>
+    <div class="card">
+      <span class="card-icon">📍</span>
+      <div class="card-title">Location</div>
+      <div class="card-text">146 invalid locations removed: single letters, 1-3 digit numbers, and addresses containing UNKNOWN/UNK.</div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-title">Time Format Correction — HHMM → HH:MM:00</span>
+      <span class="code-badge green">UPDATE</span>
+    </div>
+<pre><code><span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- TIME_OCC: Convert 4-digit integer format to HH:MM:00
+--
+--  Example: '2130' → '21:30:00' (21:30 PM)
+--           '0845' → '08:45:00'  (8:45 AM)
+--           '0'    → '00:00:00'  (midnight)
+--
+--  Logic: RIGHT('0000'+value, 4) → zero-pad to 4 digits
+--         LEFT(padded, 2)        → extract hours
+--         RIGHT(padded, 2)       → extract minutes
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">UPDATE</span> <span class="tbl">CRIME_DATA_CLEAN_TEXT_WITHOUT_DUPLICATES</span>
+<span class="kw">SET</span>    <span class="col">TIME_OCC</span> =
+    <span class="fn">LEFT</span>(<span class="fn">RIGHT</span>(<span class="str">'0000'</span> + <span class="col">TIME_OCC</span>, <span class="num">4</span>), <span class="num">2</span>) + <span class="str">':'</span> +
+    <span class="fn">RIGHT</span>(<span class="fn">RIGHT</span>(<span class="str">'0000'</span> + <span class="col">TIME_OCC</span>, <span class="num">4</span>), <span class="num">2</span>) + <span class="str">':00'</span>
+<span class="kw">WHERE</span>  <span class="col">DR_NO</span> <span class="kw">IS NOT NULL</span>;
+<span class="kw">GO</span>
+
+<span class="cmt">-- Correct STATUS_DESC: CC 'UNK' → 'CASE CLOSED'</span>
+<span class="kw">UPDATE</span> <span class="tbl">CRIME_DATA_CLEAN_TEXT_WITHOUT_DUPLICATES</span>
+<span class="kw">SET</span>    <span class="col">STATUS_DESC</span> = <span class="fn">REPLACE</span>(<span class="col">STATUS_DESC</span>, <span class="str">'UNK'</span>, <span class="str">'CASE CLOSED'</span>)
+<span class="kw">WHERE</span>  <span class="col">STATUS_ID</span> = <span class="str">'CC'</span> <span class="kw">AND</span> <span class="col">STATUS_DESC</span> = <span class="str">'UNK'</span>;
+<span class="kw">GO</span>
+
+<span class="cmt">-- Premis_Desc: Remove trailing asterisk from retired codes</span>
+<span class="kw">UPDATE</span> <span class="tbl">CRIME_DATA_CLEAN_TEXT_WITHOUT_DUPLICATES</span>
+<span class="kw">SET</span>    <span class="col">PREMIS_DESC</span> = <span class="fn">LEFT</span>(<span class="col">PREMIS_DESC</span>, <span class="fn">LEN</span>(<span class="col">PREMIS_DESC</span>) - <span class="num">1</span>)
+<span class="kw">WHERE</span>  <span class="col">PREMIS_DESC</span> <span class="kw">LIKE</span> <span class="str">'%*'</span>;
+<span class="kw">GO</span>
+
+<span class="cmt">-- Premis_Desc: Expand abbreviation RR → RAILROAD</span>
+<span class="kw">UPDATE</span> <span class="tbl">CRIME_DATA_CLEAN_TEXT_WITHOUT_DUPLICATES</span>
+<span class="kw">SET</span>    <span class="col">PREMIS_DESC</span> = <span class="fn">REPLACE</span>(<span class="col">PREMIS_DESC</span>,
+    <span class="str">'OTHER RR TRAIN (UNION PAC, SANTE FE ETC'</span>,
+    <span class="str">'OTHER RAILROAD TRAIN (UNION PAC, SANTE FE ETC)'</span>)
+<span class="kw">WHERE</span>  <span class="col">PREMIS_CD</span> = <span class="str">'811'</span>;
+<span class="kw">GO</span></code></pre>
+  </div>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── SECTION 09 -->
+<section class="section" id="s9">
+  <div class="section-header">
+    <span class="section-num">// 09</span>
+    <h2 class="section-title">Outlier Analysis — Victim Age (Tukey IQR Method)</h2>
+  </div>
+
+  <div class="warn-box">
+    VICTIM_AGE is the only truly quantitative column in this dataset.
+    All other numeric columns are codes/IDs/coordinates that don't support
+    classical outlier analysis. Tukey IQR method applied (Q3 + 1.5×IQR).
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-title">Step 09 — Complete Statistical Profile with Percentiles</span>
+      <span class="code-badge">PERCENTILE_CONT</span>
+    </div>
+<pre><code><span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- STEP 09: VICTIM AGE STATISTICAL ANALYSIS
+--
+--  Note: PERCENTILE_CONT cannot be mixed with aggregate functions
+--  (COUNT, AVG, etc.) in the same SELECT. Use separate CTEs.
+--
+--  Results:
+--   Total w/age: 733,026 | Min: 2 | Max: 120 | Mean: 39.51
+--   Q1: 28 | Median: 37 | Q3: 50 | IQR: 22
+--   Tukey upper fence: 83 → outliers start at 84
+--   Outliers (Tukey): 4,364 records (0.60%)
+--   Outliers (Z-score ±3σ): 2,641 records (0.36%)
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">WITH</span> <span class="tbl">AGE</span> <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> <span class="col">victim_age</span>
+    <span class="kw">FROM</span>   <span class="tbl">CRIME_DATA_TYPED</span>
+    <span class="kw">WHERE</span>  <span class="col">victim_age</span> <span class="kw">IS NOT NULL</span>
+),
+<span class="tbl">BASIC_STATS</span> <span class="kw">AS</span> (
+    <span class="kw">SELECT</span>
+        <span class="fn">COUNT</span>(*)                                        <span class="kw">AS</span> <span class="col">total_reg</span>,
+        <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> <span class="col">victim_age</span>)                     <span class="kw">AS</span> <span class="col">unique_age</span>,
+        <span class="fn">MIN</span>(<span class="col">victim_age</span>)                                 <span class="kw">AS</span> <span class="col">minimum</span>,
+        <span class="fn">MAX</span>(<span class="col">victim_age</span>)                                 <span class="kw">AS</span> <span class="col">maximum</span>,
+        <span class="fn">CAST</span>(<span class="fn">AVG</span>(<span class="fn">CAST</span>(<span class="col">victim_age</span> <span class="kw">AS</span> <span class="typ">FLOAT</span>)) <span class="kw">AS</span> <span class="typ">DECIMAL(10,2)</span>) <span class="kw">AS</span> <span class="col">mean</span>,
+        <span class="fn">CAST</span>(<span class="fn">VAR</span>(<span class="col">victim_age</span>)  <span class="kw">AS</span> <span class="typ">DECIMAL(10,2)</span>)         <span class="kw">AS</span> <span class="col">variance</span>,
+        <span class="fn">CAST</span>(<span class="fn">STDEV</span>(<span class="col">victim_age</span>) <span class="kw">AS</span> <span class="typ">DECIMAL(10,2)</span>)         <span class="kw">AS</span> <span class="col">stdev</span>,
+        <span class="fn">MAX</span>(<span class="col">victim_age</span>) - <span class="fn">MIN</span>(<span class="col">victim_age</span>)              <span class="kw">AS</span> <span class="col">range_val</span>
+    <span class="kw">FROM</span> <span class="tbl">AGE</span>
+),
+<span class="tbl">QUARTILES</span> <span class="kw">AS</span> (
+    <span class="cmt">-- PERCENTILE_CONT must be isolated from aggregates</span>
+    <span class="kw">SELECT DISTINCT</span>
+        <span class="fn">CAST</span>(<span class="fn">PERCENTILE_CONT</span>(<span class="num">0.25</span>) <span class="kw">WITHIN GROUP</span> (<span class="kw">ORDER BY</span> <span class="col">victim_age</span>) <span class="kw">OVER</span> () <span class="kw">AS</span> <span class="typ">DECIMAL(10,2)</span>) <span class="kw">AS</span> <span class="col">q1</span>,
+        <span class="fn">CAST</span>(<span class="fn">PERCENTILE_CONT</span>(<span class="num">0.50</span>) <span class="kw">WITHIN GROUP</span> (<span class="kw">ORDER BY</span> <span class="col">victim_age</span>) <span class="kw">OVER</span> () <span class="kw">AS</span> <span class="typ">DECIMAL(10,2)</span>) <span class="kw">AS</span> <span class="col">q2_median</span>,
+        <span class="fn">CAST</span>(<span class="fn">PERCENTILE_CONT</span>(<span class="num">0.75</span>) <span class="kw">WITHIN GROUP</span> (<span class="kw">ORDER BY</span> <span class="col">victim_age</span>) <span class="kw">OVER</span> () <span class="kw">AS</span> <span class="typ">DECIMAL(10,2)</span>) <span class="kw">AS</span> <span class="col">q3</span>,
+        <span class="fn">CAST</span>(<span class="fn">PERCENTILE_CONT</span>(<span class="num">0.99</span>) <span class="kw">WITHIN GROUP</span> (<span class="kw">ORDER BY</span> <span class="col">victim_age</span>) <span class="kw">OVER</span> () <span class="kw">AS</span> <span class="typ">DECIMAL(10,2)</span>) <span class="kw">AS</span> <span class="col">p99</span>
+    <span class="kw">FROM</span> <span class="tbl">AGE</span>
+)
+<span class="kw">SELECT</span>
+    B.*,
+    Q.<span class="col">q1</span>, Q.<span class="col">q2_median</span>, Q.<span class="col">q3</span>,
+    <span class="fn">CAST</span>(Q.<span class="col">q3</span> - Q.<span class="col">q1</span> <span class="kw">AS</span> <span class="typ">DECIMAL(10,2)</span>)                          <span class="kw">AS</span> <span class="col">iqr</span>,
+    <span class="fn">CAST</span>(Q.<span class="col">q1</span> - <span class="num">1.5</span> * (Q.<span class="col">q3</span> - Q.<span class="col">q1</span>) <span class="kw">AS</span> <span class="typ">DECIMAL(10,2)</span>)            <span class="kw">AS</span> <span class="col">tukey_lower_fence</span>,
+    <span class="fn">CAST</span>(Q.<span class="col">q3</span> + <span class="num">1.5</span> * (Q.<span class="col">q3</span> - Q.<span class="col">q1</span>) <span class="kw">AS</span> <span class="typ">DECIMAL(10,2)</span>)            <span class="kw">AS</span> <span class="col">tukey_upper_fence</span>,   <span class="cmt">-- = 83</span>
+    <span class="fn">CAST</span>(B.<span class="col">mean</span> - <span class="num">3</span> * B.<span class="col">stdev</span> <span class="kw">AS</span> <span class="typ">DECIMAL(10,2)</span>)                  <span class="kw">AS</span> <span class="col">zscore_lower_fence</span>,
+    <span class="fn">CAST</span>(B.<span class="col">mean</span> + <span class="num">3</span> * B.<span class="col">stdev</span> <span class="kw">AS</span> <span class="typ">DECIMAL(10,2)</span>)                  <span class="kw">AS</span> <span class="col">zscore_upper_fence</span>,
+    Q.<span class="col">p99</span>
+<span class="kw">FROM</span> <span class="tbl">BASIC_STATS</span> B
+<span class="kw">CROSS JOIN</span> <span class="tbl">QUARTILES</span> Q;
+<span class="kw">GO</span>
+
+<span class="cmt">-- Decision: Ages 84–99 are biologically valid (high-frequency, declining pattern).
+--           Age 120 (1 record): victim_sex=NULL, victim_descent=NULL → likely data
+--           entry error. All age > 83 archived to CRIME_DATA_OUTLIERS_VICTIM_AGE.
+--           CRIME_DATA_TYPED remains complete (source of truth).
+--           CRIME_DATA_ANALYSIS view excludes outliers for statistical work.</span>
+
+<span class="kw">SELECT</span> * <span class="kw">INTO</span> <span class="tbl">CRIME_DATA_OUTLIERS_VICTIM_AGE</span>
+<span class="kw">FROM</span> <span class="tbl">CRIME_DATA_TYPED</span>
+<span class="kw">WHERE</span> <span class="col">victim_age</span> <span class="op">></span> <span class="num">83</span>;
+<span class="kw">GO</span>
+<span class="cmt">-- 4,364 records archived (0.44% of total)</span></code></pre>
+  </div>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── SECTION 10 -->
+<section class="section" id="s10">
+  <div class="section-header">
+    <span class="section-num">// 10</span>
+    <h2 class="section-title">Typed Table — CRIME_DATA_TYPED</h2>
+  </div>
+
+  <div class="result-box">Final clean table with proper SQL Server data types, expanded categorical codes to full text,
+  age = 0 converted to NULL, derived age classification columns added.</div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-title">Step 10 — SELECT INTO with Full Type Casting</span>
+      <span class="code-badge">CAST / CONVERT</span>
+    </div>
+<pre><code><span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- STEP 10: CREATE CRIME_DATA_TYPED — Final typed clean table
+--
+--  Key decisions:
+--   · victim_age = 0   → NULL  (no victim present, not a real age)
+--   · VICT_SEX codes   → Expanded: M→MALE, F→FEMALE, X→UNKNOWN
+--   · VICT_DESCENT     → Expanded to full ethnicity names (20 codes)
+--   · DATE columns     → CONVERT(DATE, col, 101) removes time portion
+--   · TIME_OCC         → CAST AS TIME(0) — no fractional seconds
+--   · All ELSE → NULL  (no 'NOT APPLICABLE' catch-all strings)
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">SELECT</span>
+    <span class="cmt">-- ── IDENTIFICATION ─────────────────────────────────────────</span>
+    <span class="fn">CAST</span>(<span class="col">DR_NO</span>        <span class="kw">AS</span> <span class="typ">BIGINT</span>)                    <span class="kw">AS</span> <span class="col">report_number</span>,
+
+    <span class="cmt">-- ── DATES & TIME ────────────────────────────────────────────</span>
+    <span class="fn">TRY_CONVERT</span>(<span class="typ">DATE</span>, <span class="col">DATE_OCC</span>,  <span class="num">101</span>)                  <span class="kw">AS</span> <span class="col">date_occurred</span>,
+    <span class="fn">TRY_CONVERT</span>(<span class="typ">DATE</span>, <span class="col">DATE_RPTD</span>, <span class="num">101</span>)                  <span class="kw">AS</span> <span class="col">date_reported</span>,
+    <span class="fn">CAST</span>(<span class="col">TIME_OCC</span>    <span class="kw">AS</span> <span class="typ">TIME(0)</span>)                     <span class="kw">AS</span> <span class="col">time_occurred</span>,
+
+    <span class="cmt">-- ── AREA & DISTRICT ─────────────────────────────────────────</span>
+    <span class="fn">CAST</span>(<span class="col">AREA</span>        <span class="kw">AS</span> <span class="typ">TINYINT</span>)                     <span class="kw">AS</span> <span class="col">area</span>,
+    <span class="fn">CAST</span>(<span class="col">AREA_NAME</span>   <span class="kw">AS</span> <span class="typ">NVARCHAR(50)</span>)                 <span class="kw">AS</span> <span class="col">area_name</span>,
+    <span class="fn">CAST</span>(<span class="col">DISTRICT</span>   <span class="kw">AS</span> <span class="typ">SMALLINT</span>)                    <span class="kw">AS</span> <span class="col">district</span>,
+    <span class="fn">CAST</span>(<span class="col">PART1_2</span>    <span class="kw">AS</span> <span class="typ">TINYINT</span>)                     <span class="kw">AS</span> <span class="col">class_crime_type</span>,
+
+    <span class="cmt">-- ── CRIME CODE ──────────────────────────────────────────────</span>
+    <span class="fn">CAST</span>(<span class="col">CRM_CD</span>      <span class="kw">AS</span> <span class="typ">SMALLINT</span>)                    <span class="kw">AS</span> <span class="col">crime_code</span>,
+    <span class="fn">CAST</span>(<span class="col">CRM_CD_DESC</span> <span class="kw">AS</span> <span class="typ">NVARCHAR(100)</span>)                <span class="kw">AS</span> <span class="col">crime_code_description</span>,
+    <span class="fn">CAST</span>(<span class="col">MOCODES</span>     <span class="kw">AS</span> <span class="typ">NVARCHAR(100)</span>)                <span class="kw">AS</span> <span class="col">modus_operandus</span>,
+
+    <span class="cmt">-- ── VICTIM ──────────────────────────────────────────────────</span>
+    <span class="kw">CASE</span>
+        <span class="kw">WHEN</span> <span class="fn">CAST</span>(<span class="col">VICT_AGE</span> <span class="kw">AS</span> <span class="typ">TINYINT</span>) = <span class="num">0</span> <span class="kw">THEN NULL</span>  <span class="cmt">-- 0 = no victim</span>
+        <span class="kw">ELSE</span>                              <span class="fn">CAST</span>(<span class="col">VICT_AGE</span> <span class="kw">AS</span> <span class="typ">TINYINT</span>)
+    <span class="kw">END</span>                                                   <span class="kw">AS</span> <span class="col">victim_age</span>,
+
+    <span class="fn">CAST</span>(<span class="kw">CASE</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_SEX</span> = <span class="str">'M'</span> <span class="kw">THEN</span> <span class="str">'MALE'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_SEX</span> = <span class="str">'F'</span> <span class="kw">THEN</span> <span class="str">'FEMALE'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_SEX</span> = <span class="str">'X'</span> <span class="kw">THEN</span> <span class="str">'UNKNOWN'</span>
+        <span class="kw">ELSE</span>                     <span class="kw">NULL</span>    <span class="cmt">-- NULL = no victim present</span>
+    <span class="kw">END AS</span> <span class="typ">NVARCHAR(15)</span>)                                  <span class="kw">AS</span> <span class="col">victim_sex</span>,
+
+    <span class="fn">CAST</span>(<span class="kw">CASE</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'A'</span> <span class="kw">THEN</span> <span class="str">'ASIAN'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'B'</span> <span class="kw">THEN</span> <span class="str">'BLACK'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'C'</span> <span class="kw">THEN</span> <span class="str">'CHINESE'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'D'</span> <span class="kw">THEN</span> <span class="str">'CAMBODIAN'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'F'</span> <span class="kw">THEN</span> <span class="str">'PHILIPPINE'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'G'</span> <span class="kw">THEN</span> <span class="str">'GUAMANIAN'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'H'</span> <span class="kw">THEN</span> <span class="str">'HISPANIC'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'I'</span> <span class="kw">THEN</span> <span class="str">'AMERICAN INDIAN'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'J'</span> <span class="kw">THEN</span> <span class="str">'JAPANESE'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'K'</span> <span class="kw">THEN</span> <span class="str">'KOREAN'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'L'</span> <span class="kw">THEN</span> <span class="str">'LAOTIAN'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'O'</span> <span class="kw">THEN</span> <span class="str">'OTHER'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'P'</span> <span class="kw">THEN</span> <span class="str">'PACIFIC ISLANDER'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'S'</span> <span class="kw">THEN</span> <span class="str">'SAMOAN'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'U'</span> <span class="kw">THEN</span> <span class="str">'HAWAIIAN'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'V'</span> <span class="kw">THEN</span> <span class="str">'VIETNAMESE'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'W'</span> <span class="kw">THEN</span> <span class="str">'WHITE'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'X'</span> <span class="kw">THEN</span> <span class="str">'UNKNOWN'</span>
+        <span class="kw">WHEN</span> <span class="col">VICT_DESCENT</span> = <span class="str">'Z'</span> <span class="kw">THEN</span> <span class="str">'ASIAN INDIAN'</span>
+        <span class="kw">ELSE</span>                          <span class="kw">NULL</span>
+    <span class="kw">END AS</span> <span class="typ">NVARCHAR(30)</span>)                                  <span class="kw">AS</span> <span class="col">victim_descent</span>,
+
+    <span class="cmt">-- ── PREMISE ─────────────────────────────────────────────────</span>
+    <span class="fn">CAST</span>(<span class="col">PREMIS_CD</span>    <span class="kw">AS</span> <span class="typ">SMALLINT</span>)                    <span class="kw">AS</span> <span class="col">premis_code</span>,
+    <span class="fn">CAST</span>(<span class="col">PREMIS_DESC</span>  <span class="kw">AS</span> <span class="typ">NVARCHAR(100)</span>)                <span class="kw">AS</span> <span class="col">premis_description</span>,
+
+    <span class="cmt">-- ── WEAPON (NULL = no weapon involved) ──────────────────────</span>
+    <span class="fn">NULLIF</span>(<span class="fn">TRY_CAST</span>(<span class="col">WEAPON_CD</span>   <span class="kw">AS</span> <span class="typ">SMALLINT</span>), <span class="str">''</span>)       <span class="kw">AS</span> <span class="col">weapon_used_code</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRY_CAST</span>(<span class="col">WEAPON_DESC</span> <span class="kw">AS</span> <span class="typ">NVARCHAR(100)</span>), <span class="str">''</span>) <span class="kw">AS</span> <span class="col">weapon_description</span>,
+
+    <span class="cmt">-- ── CASE STATUS ─────────────────────────────────────────────</span>
+    <span class="fn">CAST</span>(<span class="col">STATUS_ID</span>    <span class="kw">AS</span> <span class="typ">CHAR(2)</span>)                      <span class="kw">AS</span> <span class="col">status</span>,
+    <span class="fn">CAST</span>(<span class="col">STATUS_DESC</span>  <span class="kw">AS</span> <span class="typ">NVARCHAR(20)</span>)                  <span class="kw">AS</span> <span class="col">status_description</span>,
+
+    <span class="cmt">-- ── ADDITIONAL CHARGES (multivalued → normalized in Step 11) ─</span>
+    <span class="fn">TRY_CAST</span>(<span class="col">CRM_CD_1</span> <span class="kw">AS</span> <span class="typ">SMALLINT</span>)                     <span class="kw">AS</span> <span class="col">crime_code_1</span>,
+    <span class="fn">TRY_CAST</span>(<span class="col">CRM_CD_2</span> <span class="kw">AS</span> <span class="typ">SMALLINT</span>)                     <span class="kw">AS</span> <span class="col">crime_code_2</span>,
+    <span class="fn">TRY_CAST</span>(<span class="col">CRM_CD_3</span> <span class="kw">AS</span> <span class="typ">SMALLINT</span>)                     <span class="kw">AS</span> <span class="col">crime_code_3</span>,
+    <span class="fn">TRY_CAST</span>(<span class="col">CRM_CD_4</span> <span class="kw">AS</span> <span class="typ">SMALLINT</span>)                     <span class="kw">AS</span> <span class="col">crime_code_4</span>,
+
+    <span class="cmt">-- ── LOCATION ────────────────────────────────────────────────</span>
+    <span class="fn">CAST</span>(<span class="col">LOCATION</span>     <span class="kw">AS</span> <span class="typ">NVARCHAR(60)</span>)                  <span class="kw">AS</span> <span class="col">location_occurred</span>,
+    <span class="fn">NULLIF</span>(<span class="fn">TRY_CAST</span>(<span class="col">CROSS_STREET</span> <span class="kw">AS</span> <span class="typ">NVARCHAR(60)</span>), <span class="str">''</span>) <span class="kw">AS</span> <span class="col">cross_street</span>,
+    <span class="fn">CAST</span>(<span class="col">LATITUDE</span>    <span class="kw">AS</span> <span class="typ">DECIMAL(8,4)</span>)                  <span class="kw">AS</span> <span class="col">latitude</span>,
+    <span class="fn">CAST</span>(<span class="col">LONGITUDE</span>   <span class="kw">AS</span> <span class="typ">DECIMAL(8,4)</span>)                  <span class="kw">AS</span> <span class="col">longitude</span>
+
+<span class="kw">INTO</span> <span class="tbl">CRIME_DATA_TYPED</span>
+<span class="kw">FROM</span>  <span class="tbl">CRIME_DATA_CLEAN_TEXT_WITHOUT_DUPLICATES</span>;
+<span class="kw">GO</span>
+<span class="cmt">-- Result: 999,299 rows — source of truth for all downstream objects</span></code></pre>
+  </div>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── SECTION 11 -->
+<section class="section" id="s11">
+  <div class="section-header">
+    <span class="section-num">// 11</span>
+    <h2 class="section-title">Normalization — Multivalued Columns</h2>
+  </div>
+
+  <div class="info-box">
+    Two columns contain multiple values per row: MOCODES (space-separated 4-digit codes)
+    and CRM_CD_1–4 (additional crime charges). Both are denormalized into junction tables
+    using STRING_SPLIT() and CROSS APPLY with composite primary keys.
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-title">Step 11 — Junction Tables: RECORDS_AND_MOCODES &amp; RECORDS_AND_CRIMECODES</span>
+      <span class="code-badge">STRING_SPLIT</span>
+    </div>
+<pre><code><span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- STEP 11A: NORMALIZE MODUS OPERANDUS CODES
+--           Each space-separated 4-digit mocode becomes one row.
+--           Composite PK prevents any report_number + mocode duplicate.
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">CREATE TABLE</span> <span class="tbl">RECORDS_AND_MOCODES</span> (
+    <span class="col">report_number</span>   <span class="typ">BIGINT</span>    <span class="kw">NOT NULL</span>,
+    <span class="col">modus_operandus</span> <span class="typ">SMALLINT</span>  <span class="kw">NOT NULL</span>,
+    <span class="kw">PRIMARY KEY</span> (<span class="col">report_number</span>, <span class="col">modus_operandus</span>)
+);
+<span class="kw">GO</span>
+
+<span class="kw">INSERT INTO</span> <span class="tbl">RECORDS_AND_MOCODES</span>
+<span class="kw">SELECT DISTINCT</span>
+    <span class="col">report_number</span>,
+    <span class="fn">CAST</span>(<span class="col">value</span> <span class="kw">AS</span> <span class="typ">SMALLINT</span>) <span class="kw">AS</span> <span class="col">modus_operandus</span>
+<span class="kw">FROM</span> <span class="tbl">CRIME_DATA_TYPED</span>
+<span class="kw">CROSS APPLY</span> <span class="fn">STRING_SPLIT</span>(<span class="col">modus_operandus</span>, <span class="str">' '</span>)
+<span class="kw">WHERE</span> <span class="col">value</span> <span class="op"><></span> <span class="str">''</span>
+  <span class="kw">AND</span> <span class="col">value</span> <span class="kw">IS NOT NULL</span>
+  <span class="kw">AND</span> <span class="fn">TRY_CAST</span>(<span class="col">value</span> <span class="kw">AS</span> <span class="typ">SMALLINT</span>) <span class="kw">IS NOT NULL</span>;
+<span class="kw">GO</span>
+<span class="cmt">-- Result: 2,947,966 rows (avg ~2.95 mocodes per report)</span>
+
+<span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- STEP 11B: NORMALIZE CRIME CODES (CRM_CD + CRM_CD_1 through CRM_CD_4)
+--           CONCAT_WS combines all 5 code columns into one string,
+--           then STRING_SPLIT explodes each code to a separate row.
+--           Code 998 (filler placeholder) is excluded.
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">CREATE TABLE</span> <span class="tbl">RECORDS_AND_CRIMECODES</span> (
+    <span class="col">record_number</span>   <span class="typ">BIGINT</span>    <span class="kw">NOT NULL</span>,
+    <span class="col">crime_code</span>      <span class="typ">SMALLINT</span>  <span class="kw">NOT NULL</span>,
+    <span class="kw">PRIMARY KEY</span> (<span class="col">record_number</span>, <span class="col">crime_code</span>)
+);
+<span class="kw">GO</span>
+
+<span class="kw">INSERT INTO</span> <span class="tbl">RECORDS_AND_CRIMECODES</span>
+<span class="kw">SELECT DISTINCT</span>
+    <span class="col">report_number</span>,
+    <span class="fn">TRY_CAST</span>(<span class="col">value</span> <span class="kw">AS</span> <span class="typ">SMALLINT</span>) <span class="kw">AS</span> <span class="col">crime_code</span>
+<span class="kw">FROM</span> <span class="tbl">CRIME_DATA_TYPED</span>
+<span class="kw">CROSS APPLY</span> <span class="fn">STRING_SPLIT</span>(
+    <span class="fn">CONCAT_WS</span>(<span class="str">' '</span>,
+        <span class="fn">CAST</span>(<span class="col">crime_code</span>   <span class="kw">AS</span> <span class="typ">NVARCHAR(10)</span>),
+        <span class="fn">CAST</span>(<span class="col">crime_code_1</span> <span class="kw">AS</span> <span class="typ">NVARCHAR(10)</span>),
+        <span class="fn">CAST</span>(<span class="col">crime_code_2</span> <span class="kw">AS</span> <span class="typ">NVARCHAR(10)</span>),
+        <span class="fn">CAST</span>(<span class="col">crime_code_3</span> <span class="kw">AS</span> <span class="typ">NVARCHAR(10)</span>),
+        <span class="fn">CAST</span>(<span class="col">crime_code_4</span> <span class="kw">AS</span> <span class="typ">NVARCHAR(10)</span>)
+    ), <span class="str">' '</span>)
+<span class="kw">WHERE</span> <span class="col">value</span> <span class="op"><></span> <span class="str">''</span>
+  <span class="kw">AND</span> <span class="col">value</span> <span class="op"><></span> <span class="str">'998'</span>     <span class="cmt">-- Exclude filler code</span>
+  <span class="kw">AND</span> <span class="fn">TRY_CAST</span>(<span class="col">value</span> <span class="kw">AS</span> <span class="typ">SMALLINT</span>) <span class="kw">IS NOT NULL</span>;
+<span class="kw">GO</span>
+<span class="cmt">-- Result: 1,070,466 rows</span></code></pre>
+  </div>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── SECTION 12 -->
+<section class="section" id="s12">
+  <div class="section-header">
+    <span class="section-num">// 12</span>
+    <h2 class="section-title">Analytical Views — Architecture</h2>
+  </div>
+
+  <div class="warn-box">
+    Design principle: Never JOIN two multivalued tables in a permanent view.
+    Doing so creates a Cartesian product (N×M rows per report) that inflates
+    row counts dramatically. Each view joins at most ONE multivalued table.
+  </div>
+
+  <div class="views-diagram">
+    <div class="vd-center">
+      <div class="vd-box">
+        <div class="label">CRIME_DATA_PRINCIPAL</div>
+        <div class="sub">999,299 rows — enriched with date parts, age groups, crime flags</div>
+      </div>
+    </div>
+    <div class="vd-row">
+      <div class="vd-view" data-type="1:1">
+        <div class="name">vSUMMARY_REPORTS</div>
+        <div class="rows">999,299 rows</div>
+        <div class="desc">One row per report. Crime code joined directly from CRIME_DATA_TYPED. No multivalued joins. Fastest view — dashboards & KPIs.</div>
+      </div>
+      <div class="vd-view" data-type="1:N">
+        <div class="name">vSUMMARY_REPORTS_WITH_CRIME</div>
+        <div class="rows">1,070,466 rows</div>
+        <div class="desc">One row per report × crime code. Joins RECORDS_AND_CRIMECODES + catalog. Use for crime category analysis.</div>
+      </div>
+      <div class="vd-view" data-type="1:N">
+        <div class="name">vSUMMARY_REPORTS_WITH_MOCODES</div>
+        <div class="rows">2,947,966 rows</div>
+        <div class="desc">One row per report × mocode. Joins RECORDS_AND_MOCODES + catalog. Use for modus operandi analysis.</div>
+      </div>
+      <div class="vd-view" data-type="N:M">
+        <div class="name">vCODES_CATALOG</div>
+        <div class="rows">3,025,453 rows</div>
+        <div class="desc">Codes only — no report data. Cross-joins both multivalued tables. Always filter by crime_code or mocode_category before querying.</div>
+      </div>
+      <div class="vd-view" data-type="1:1">
+        <div class="name">CRIME_DATA_ANALYSIS (VIEW)</div>
+        <div class="rows">~994,935 rows</div>
+        <div class="desc">Filter view over CRIME_DATA_TYPED. Excludes victim_age &gt; 83 (Tukey outliers). Use for statistical analysis.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-title">vSUMMARY_REPORTS — 1:1 Master View (KPIs &amp; Dashboards)</span>
+      <span class="code-badge green">VIEW</span>
+    </div>
+<pre><code><span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- VIEW: vSUMMARY_REPORTS — One row per incident report
+--
+--  Joins CRIME_DATA_PRINCIPAL + CRIME_DATA_TYPED (for primary crime
+--  code) + CRIME_CODE_DESC_CLASS (for crime category).
+--  No multivalued table joins → always returns exactly 999,299 rows.
+--  Use this view for 90% of general analysis and dashboards.
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="kw">CREATE VIEW</span> <span class="tbl">vSUMMARY_REPORTS</span> <span class="kw">AS</span>
+<span class="kw">SELECT</span>
+    P.<span class="col">report_number</span>,
+    P.<span class="col">date_occurred</span>,        P.<span class="col">year_occurred</span>,
+    <span class="fn">UPPER</span>(P.<span class="col">month_occurred</span>)  <span class="kw">AS</span> <span class="col">month_occurred</span>,
+    P.<span class="col">day_of_week_occurred</span>,   P.<span class="col">quarter_of_year_occurred</span>,
+    P.<span class="col">time_occurred</span>,         P.<span class="col">hour_occurred</span>,
+    P.<span class="col">period_of_day</span>,          P.<span class="col">lapd_shift</span>,
+    P.<span class="col">is_daytime</span>,             P.<span class="col">is_nighttime</span>,       P.<span class="col">is_business_hours</span>,
+    P.<span class="col">date_reported</span>,          P.<span class="col">day_for_reported</span>,
+    P.<span class="col">reporting_immediacy</span>,    P.<span class="col">report_temperature</span>,
+    P.<span class="col">is_late_report</span>,         P.<span class="col">is_very_late_report</span>,
+    <span class="cmt">-- Primary crime code — from typed table (no junction join)</span>
+    T.<span class="col">crime_code</span>,
+    T.<span class="col">crime_code_description</span>,
+    CC.<span class="col">crime_category</span>,
+    P.<span class="col">area</span>,                   P.<span class="col">area_name</span>,           P.<span class="col">district</span>,
+    P.<span class="col">class_crime_type</span>,        P.<span class="col">classification_crime_name</span>,
+    P.<span class="col">victim_age</span>,              P.<span class="col">age_group_10yr</span>,       P.<span class="col">life_stage</span>,
+    P.<span class="col">legal_status</span>,            P.<span class="col">lapd_age_category</span>,   P.<span class="col">generation</span>,
+    P.<span class="col">vulnerability_group</span>,     P.<span class="col">broad_age_group</span>,
+    P.<span class="col">victim_sex</span>,              P.<span class="col">victim_descent</span>,
+    P.<span class="col">premis_code</span>,             P.<span class="col">premis_description</span>,
+    <span class="fn">NULLIF</span>(P.<span class="col">weapon_used_code</span>,  <span class="str">''</span>) <span class="kw">AS</span> <span class="col">weapon_used_code</span>,
+    <span class="fn">NULLIF</span>(P.<span class="col">weapon_description</span>, <span class="str">''</span>) <span class="kw">AS</span> <span class="col">weapon_description</span>,
+    P.<span class="col">status</span>,                  P.<span class="col">status_description</span>,
+    P.<span class="col">location_occurred</span>,
+    <span class="fn">NULLIF</span>(P.<span class="col">cross_street</span>, <span class="str">''</span>)  <span class="kw">AS</span> <span class="col">cross_street</span>,
+    P.<span class="col">latitude</span>,               P.<span class="col">longitude</span>
+<span class="kw">FROM</span>  <span class="tbl">CRIME_DATA_PRINCIPAL</span>    P
+<span class="kw">INNER JOIN</span> <span class="tbl">CRIME_DATA_TYPED</span>   T  <span class="kw">ON</span> P.<span class="col">report_number</span> = T.<span class="col">report_number</span>
+<span class="kw">LEFT JOIN</span>  <span class="tbl">CRIME_CODE_DESC_CLASS</span> CC <span class="kw">ON</span> T.<span class="col">crime_code</span>    = CC.<span class="col">crime_code</span>;
+<span class="kw">GO</span>
+<span class="cmt">-- Verification: SELECT COUNT(*) FROM vSUMMARY_REPORTS → 999,299</span></code></pre>
+  </div>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── SECTION 13 -->
+<section class="section" id="s13">
+  <div class="section-header">
+    <span class="section-num">// 13</span>
+    <h2 class="section-title">Export Summaries — Tableau Public Ready</h2>
+  </div>
+
+  <div class="info-box">
+    Tableau Public cannot connect directly to SQL Server. Strategy: pre-aggregate
+    data in SQL Server → export as CSV → connect Tableau to lightweight files.
+    SQL does all heavy processing; Tableau only renders charts.
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>#</th><th>Table Name</th><th>Analysis Type</th><th>Chart Type</th><th>Source View</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="accent">01</td><td>CRIMENES_POR_AÑO_Y_MES</td><td>Univariate Temporal</td><td>Line Chart</td><td class="dim">vSUMMARY_REPORTS_WITH_CRIME</td></tr>
+      <tr><td class="accent">02</td><td>CRIMENES_POR_CATEGORIA</td><td>Univariate Categorical</td><td>Bar Chart (H)</td><td class="dim">vSUMMARY_REPORTS_WITH_CRIME</td></tr>
+      <tr><td class="accent">03</td><td>CRIMENES_POR_AREA</td><td>Univariate Geographic</td><td>Bar / Map</td><td class="dim">vSUMMARY_REPORTS</td></tr>
+      <tr><td class="accent">04</td><td>CRIMENES_POR_PERIODO_DEL_DIA</td><td>Univariate Time</td><td>Pie / Bar</td><td class="dim">vSUMMARY_REPORTS</td></tr>
+      <tr><td class="accent">05</td><td>PERFIL_VICTIMA_POR_SEXO</td><td>Univariate Demographic</td><td>Donut</td><td class="dim">vSUMMARY_REPORTS</td></tr>
+      <tr><td class="accent">06</td><td>PERFIL_VICTIMA_POR_DESCENDENCIA</td><td>Univariate Demographic</td><td>Bar Chart (H)</td><td class="dim">vSUMMARY_REPORTS</td></tr>
+      <tr><td class="accent">07</td><td>DISTRIBUCION_EDAD_VICTIMAS</td><td>Univariate Numeric</td><td>Histogram</td><td class="dim">vSUMMARY_REPORTS</td></tr>
+      <tr><td class="accent">08</td><td>MOCODES_POR_CATEGORIA</td><td>Univariate Categorical</td><td>Bar Chart</td><td class="dim">vSUMMARY_REPORTS_WITH_MOCODES</td></tr>
+      <tr><td class="accent2">09</td><td>CATEGORIA_CRIME_VS_AREA</td><td>Bivariate</td><td>Heatmap</td><td class="dim">vSUMMARY_REPORTS_WITH_CRIME</td></tr>
+      <tr><td class="accent2">10</td><td>CATEGORIA_CRIME_VS_PERIODO</td><td>Bivariate</td><td>Heatmap</td><td class="dim">vSUMMARY_REPORTS_WITH_CRIME</td></tr>
+      <tr><td class="accent2">11</td><td>CATEGORIA_CRIME_VS_SEXO</td><td>Bivariate</td><td>Grouped Bar</td><td class="dim">vSUMMARY_REPORTS_WITH_CRIME</td></tr>
+      <tr><td class="accent2">12</td><td>CATEGORIA_CRIME_VS_VULNERABILIDAD</td><td>Bivariate</td><td>Heatmap</td><td class="dim">vSUMMARY_REPORTS_WITH_CRIME</td></tr>
+      <tr><td class="accent2">13</td><td>MOCODE_CATEGORY_VS_CRIME_CATEGORY</td><td>Bivariate</td><td>Heatmap</td><td class="dim">vSUMMARY_CRIME_DATA_CRM_JOIN_MOCODES</td></tr>
+      <tr><td class="accent2">14</td><td>TENDENCIA_ANUAL_POR_CATEGORIA</td><td>Bivariate</td><td>Multi-Line</td><td class="dim">vSUMMARY_REPORTS_WITH_CRIME</td></tr>
+      <tr><td style="color:var(--green)">15</td><td>AREA_ANO_CATEGORIA_PERIODO</td><td>Multivariate</td><td>Dashboard</td><td class="dim">vSUMMARY_REPORTS_WITH_CRIME</td></tr>
+      <tr><td style="color:var(--green)">16</td><td>COORDENADAS_MAPA_DE_CALOR</td><td>Geospatial</td><td>Point Map</td><td class="dim">vSUMMARY_REPORTS_WITH_CRIME</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-title">Export Methods — SQL Server to CSV</span>
+      <span class="code-badge orange">EXPORT</span>
+    </div>
+<pre><code><span class="cmt">-- ═══════════════════════════════════════════════════════════════════
+-- EXPORT METHODS: SQL Server → CSV → Tableau Public
+-- ═══════════════════════════════════════════════════════════════════</span>
+
+<span class="cmt">-- ── METHOD 1: SSMS GUI (small files) ───────────────────────────────
+-- Query results → right-click → Save Results As → .csv
+-- Use for tables with &lt; 50,000 rows</span>
+
+<span class="cmt">-- ── METHOD 2: BCP Utility (large files, fastest) ───────────────────</span>
+<span class="cmt">-- Run from Windows Command Prompt:</span>
+<span class="cmt">-- bcp "SELECT * FROM CrimeAnalysis.dbo.COORDENADAS_MAPA_DE_CALOR_EN_TABLEAU_PTS_LL"</span>
+<span class="cmt">--     queryout "C:\exports\coordinates_map.csv"</span>
+<span class="cmt">--     -c -t, -S YOUR_SERVER -T</span>
+<span class="cmt">--
+--  -c    = character data (CSV-compatible)
+--  -t,   = comma field terminator
+--  -T    = trusted Windows authentication</span>
+
+<span class="cmt">-- ── METHOD 3: SQLCMD (scriptable, automatable) ──────────────────────</span>
+<span class="cmt">-- sqlcmd -S YOUR_SERVER -d CrimeAnalysis</span>
+<span class="cmt">--        -Q "SELECT * FROM CRIMENES_POR_AÑO_Y_MES_U_L_CH"</span>
+<span class="cmt">--        -o "C:\exports\crimes_by_month.csv" -s","</span>
+
+<span class="cmt">-- ── TABLEAU PUBLIC CONNECTION ────────────────────────────────────────
+-- 1. Open Tableau Public Desktop
+-- 2. Connect → Text File → select .csv
+-- 3. Drag table to canvas
+-- 4. Build sheets and dashboards
+-- 5. Publish to Tableau Public server</span></code></pre>
+  </div>
+</section>
+
+<!-- ───────────────────────────────────────────────────────── CLEANUP SUMMARY -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">// 14</span>
+    <h2 class="section-title">Cleaning Summary — Records Removed</h2>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Step</th><th>Reason for Removal</th><th>Records Removed</th><th>Remaining</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Raw Import</td><td>—</td><td class="dim">—</td><td class="accent2">1,005,062</td></tr>
+      <tr><td>Step 06</td><td>Duplicate records (all non-key columns identical)</td><td class="accent">2,966</td><td>1,002,096</td></tr>
+      <tr><td>Step 07</td><td>Premis_Cd AND Premis_Desc both NULL</td><td class="accent">16</td><td>1,002,080</td></tr>
+      <tr><td>Step 08</td><td>DR_NO length &lt; 9 digits (malformed primary keys)</td><td class="accent">7</td><td>1,002,073</td></tr>
+      <tr><td>Step 08</td><td>Vict_Sex invalid codes: 'H' and '-'</td><td class="accent">115</td><td>1,001,958</td></tr>
+      <tr><td>Step 08</td><td>Vict_Descent invalid code: '-'</td><td class="accent">1</td><td>1,001,957</td></tr>
+      <tr><td>Step 08</td><td>Coordinates (0,0) — anonymized pairs</td><td class="accent">2,237</td><td>999,720</td></tr>
+      <tr><td>Step 08</td><td>Premis_Desc = 'RETIRED (DUPLICATE) DO NOT USE'</td><td class="accent">9</td><td>999,711</td></tr>
+      <tr><td>Step 08</td><td>Victim age negative values</td><td class="accent">135</td><td>999,576</td></tr>
+      <tr><td>Step 08</td><td>Invalid LOCATION values (letters, unknowns)</td><td class="accent">146</td><td>999,430</td></tr>
+      <tr><td>Step 08</td><td>Invalid CROSS_STREET values</td><td class="accent">131</td><td>999,299</td></tr>
+      <tr><td colspan="2"><strong>Total Records Removed</strong></td><td class="accent" style="font-weight:700">5,763</td><td class="green" style="font-weight:700">999,299</td></tr>
+    </tbody>
+  </table>
+
+  <div class="result-box">
+    Final clean dataset: 999,299 records — 99.43% data retention from original 1,005,062 raw records.
+    All removed records are archived in dedicated audit tables for traceability.
+  </div>
+</section>
+
+</main>
+</div>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer>
+  <div class="footer-left">
+    Crime<span>Analysis</span>.sql
+  </div>
+  <div class="footer-right">
+    SQL Server · T-SQL · Data Engineering Portfolio · LAPD Open Data 2020–2025
+  </div>
+</footer>
+
+<script>
+  // Highlight active nav on scroll
+  const sections = document.querySelectorAll('.section[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(n => n.classList.remove('active'));
+        const active = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
